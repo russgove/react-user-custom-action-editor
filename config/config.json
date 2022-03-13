@@ -1,0 +1,19 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "user-custom-action-editor-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/userCustomActionEditor/UserCustomActionEditorWebPart.js",
+          "manifest": "./src/webparts/userCustomActionEditor/UserCustomActionEditorWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "UserCustomActionEditorWebPartStrings": "lib/webparts/userCustomActionEditor/loc/{locale}.js",
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js"
+  }
+}
