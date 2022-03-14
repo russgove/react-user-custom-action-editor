@@ -17,7 +17,7 @@
         "@microsoft/sp-webpart-base": "1.12.1",
         "@pnp/graph": "3.1.0",
         "@pnp/sp": "3.1.0",
-        "@pnp/spfx-controls-react": "3.5.0",
+        "@pnp/spfx-controls-react": "3.7.0-beta.1977898",
         "date-fns": "2.28.0",
         "lodash": "4.17.21",
         "moment": "2.29.1",
