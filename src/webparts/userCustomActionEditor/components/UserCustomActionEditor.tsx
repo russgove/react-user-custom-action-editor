@@ -79,12 +79,15 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
   }
   const cols: Array<IColumn> = [
     {
-      key: "edit", name: "Edit",
+      key: "edit", name: "Actions",
       isResizable: false,
       fieldName: "dummy", minWidth: 70,
       onRender: (item?: any, index?: number, column?: IColumn) => {
         return (
+          <div>
           <IconButton iconProps={{ iconName: "Edit" }} onClick={(e) => { setSelectedUserCustomAction(item); setCommand("edit"); }} />
+          <IconButton iconProps={{ iconName: "Delete" }} onClick={(e) => { setSelectedUserCustomAction(item); setCommand("delete"); }} />
+          </div>
         );
 
       }
@@ -140,7 +143,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
           }}
         isBlocking={true}
       >
-          <TextField label='Id' value={selectedUserCustomAction ? selectedUserCustomAction["Id"] : ""} />
+          <TextField label='Id' disabled={true}  value={selectedUserCustomAction ? selectedUserCustomAction["Id"] : ""} />
       
         <TextField label='ClientSideComponentId' value={selectedUserCustomAction ? selectedUserCustomAction["ClientSideComponentId"] : ""} />
         <TextField label='ClientSideComponentProperties' multiline={true} value={selectedUserCustomAction ? selectedUserCustomAction["ClientSideComponentProperties"] : ""} />
