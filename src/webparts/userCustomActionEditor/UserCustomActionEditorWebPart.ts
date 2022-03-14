@@ -14,14 +14,21 @@ import { IUserCustomActionEditorProps } from './components/IUserCustomActionEdit
 export interface IUserCustomActionEditorWebPartProps {
   description: string;
 }
-
+import { spfi, SPFx } from "@pnp/sp";
 export default class UserCustomActionEditorWebPart extends BaseClientSideWebPart<IUserCustomActionEditorWebPartProps> {
+  protected async onInit(): Promise<void> {
 
+    await super.onInit();
+    const sp = spfi().using(SPFx(this.context));
+
+}
   public render(): void {
+    debugger;
     const element: React.ReactElement<IUserCustomActionEditorProps> = React.createElement(
       UserCustomActionEditor,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        context:this.context
       }
     );
 
