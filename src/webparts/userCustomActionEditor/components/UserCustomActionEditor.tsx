@@ -15,6 +15,7 @@ import { PrimaryButton } from "office-ui-fabric-react/lib/Button";
 import { IContextualMenuItem } from "office-ui-fabric-react/lib/ContextualMenu";
 import { DetailsList, IColumn, Selection, SelectionMode } from "office-ui-fabric-react/lib/DetailsList";
 import { Dialog, DialogFooter, DialogType } from "office-ui-fabric-react/lib/Dialog";
+import { ScrollablePane } from "office-ui-fabric-react/lib/ScrollablePane";
 import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
 import { MessageBar, MessageBarType } from "office-ui-fabric-react/lib/MessageBar";
 import { Overlay } from "office-ui-fabric-react/lib/Overlay";
@@ -57,6 +58,23 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
       },
 
     }];
+  function getHeader(command: string): string {
+    switch (command) {
+      case "add": { return "Add new Action" }
+      case "edit": { return "Edit existing Action" }
+      case "delete": { return "Delete Action" }
+      default: { return "unknown  command" }
+    }
+  }
+  function getButtonText(command: string): string {
+    switch (command) {
+      case "add": { return "Add Action" }
+      case "edit": { return "Save changes" }
+      case "delete": { return "Delete Action" }
+      default: { return "unknown  command" }
+    }
+  }
+
   const farItemsNonFocusable: IContextualMenuItem[] = [
     {
       key: "Update Selected",
@@ -85,8 +103,8 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
       onRender: (item?: any, index?: number, column?: IColumn) => {
         return (
           <div>
-          <IconButton iconProps={{ iconName: "Edit" }} onClick={(e) => { setSelectedUserCustomAction(item); setCommand("edit"); }} />
-          <IconButton iconProps={{ iconName: "Delete" }} onClick={(e) => { setSelectedUserCustomAction(item); setCommand("delete"); }} />
+            <IconButton iconProps={{ iconName: "Edit" }} onClick={(e) => { setSelectedUserCustomAction(item); setCommand("edit"); }} />
+            <IconButton iconProps={{ iconName: "Delete" }} onClick={(e) => { setSelectedUserCustomAction(item); setCommand("delete"); }} />
           </div>
         );
 
@@ -132,19 +150,24 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
 
       />
       <DetailsList items={actions} columns={cols}></DetailsList>
+
       <Panel
         type={PanelType.custom | PanelType.smallFixedNear}
         customWidth='900px'
         isOpen={command !== null}
-        headerText={command === "add" ? "Add new Action" : "Edit existing Action"}
+        headerText={
+          getHeader(command)
+
+        }
         onDismiss={
           () => {
             setSelectedUserCustomAction(null); setCommand(null);
           }}
         isBlocking={true}
       >
-          <TextField label='Id' disabled={true}  value={selectedUserCustomAction ? selectedUserCustomAction["Id"] : ""} />
-      
+
+        <TextField label='Id' disabled={true} value={selectedUserCustomAction ? selectedUserCustomAction["Id"] : ""} />
+
         <TextField label='ClientSideComponentId' value={selectedUserCustomAction ? selectedUserCustomAction["ClientSideComponentId"] : ""} />
         <TextField label='ClientSideComponentProperties' multiline={true} value={selectedUserCustomAction ? selectedUserCustomAction["ClientSideComponentProperties"] : ""} />
         <TextField label='CommandUIExtension' multiline={true} value={selectedUserCustomAction ? selectedUserCustomAction["CommandUIExtension"] : ""} />
@@ -152,74 +175,97 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
           value={selectedUserCustomAction ? selectedUserCustomAction["Description"] : ""}
           onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
             setSelectedUserCustomAction({ ...selectedUserCustomAction, Description: newValue });
-          }} 
-          />
+          }}
+        />
         <TextField label='Group' value={selectedUserCustomAction ? selectedUserCustomAction["Group"] : ""}
-           onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-          setSelectedUserCustomAction({ ...selectedUserCustomAction, Group: newValue });
-        }}  />
+          onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+            setSelectedUserCustomAction({ ...selectedUserCustomAction, Group: newValue });
+          }} />
         <TextField label='HostProperties' value={selectedUserCustomAction ? selectedUserCustomAction["HostProperties"] : ""} />
         <TextField label='ImageUrl' value={selectedUserCustomAction ? selectedUserCustomAction["ImageUrl"] : ""} />
-        <TextField label='Location' value={selectedUserCustomAction ? selectedUserCustomAction["Location"] : ""} 
-             onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-              setSelectedUserCustomAction({ ...selectedUserCustomAction, Location: newValue });
-            }} 
+        <TextField label='Location' value={selectedUserCustomAction ? selectedUserCustomAction["Location"] : ""}
+          onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+            setSelectedUserCustomAction({ ...selectedUserCustomAction, Location: newValue });
+          }}
         />
-        <TextField label='Name' value={selectedUserCustomAction ? selectedUserCustomAction["Name"] : ""} />
+        <TextField label='Name' value={selectedUserCustomAction ? selectedUserCustomAction["Name"] : ""}
+          onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+            setSelectedUserCustomAction({ ...selectedUserCustomAction, Name: newValue });
+          }}
+        />
         <TextField label='RegistrationId' value={selectedUserCustomAction ? selectedUserCustomAction["RegistrationId"] : ""} />
         <TextField label='RegistrationType' value={selectedUserCustomAction ? selectedUserCustomAction["RegistrationType"].toString() : ""} />
         <TextField label='Scope' value={selectedUserCustomAction ? selectedUserCustomAction["Scope"].toString() : ""} />
         <TextField label='ScriptBlock' value={selectedUserCustomAction ? selectedUserCustomAction["ScriptBlock"] : ""} />
-        <TextField label='ScriptSrc' value={selectedUserCustomAction ? selectedUserCustomAction["ScriptSrc"] : ""} />
-        <TextField label='Sequence' value={selectedUserCustomAction ? selectedUserCustomAction["Sequence"].toString() : ""} />
+        <TextField label='ScriptSrc' value={selectedUserCustomAction ? selectedUserCustomAction["ScriptSrc"] : ""}
+          onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+            setSelectedUserCustomAction({ ...selectedUserCustomAction, ScriptSrc: newValue });
+          }} />
+        <TextField label='Sequence' type='number' value={selectedUserCustomAction ? selectedUserCustomAction["Sequence"].toString() : ""}
+          onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+            setSelectedUserCustomAction({ ...selectedUserCustomAction, Sequence: parseInt(newValue) });
+          }}
+        />
         <TextField label='Title' value={selectedUserCustomAction ? selectedUserCustomAction["Title"] : ""}
-        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-          setSelectedUserCustomAction({ ...selectedUserCustomAction, Title: newValue });
-        }} 
-         />
-        <TextField label='Url' value={selectedUserCustomAction ? selectedUserCustomAction["Url"] : ""} 
-        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-          setSelectedUserCustomAction({ ...selectedUserCustomAction, Url: newValue });
-        }} />
+          onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+            setSelectedUserCustomAction({ ...selectedUserCustomAction, Title: newValue });
+          }}
+        />
+        <TextField label='Url' value={selectedUserCustomAction ? selectedUserCustomAction["Url"] : ""}
+          onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+            setSelectedUserCustomAction({ ...selectedUserCustomAction, Url: newValue });
+          }} />
         <TextField label='VersionOfUserCustomAction' value={selectedUserCustomAction ? selectedUserCustomAction["VersionOfUserCustomAction"] : ""} />
+
         <PrimaryButton onClick={async (e) => {
           const spWeb = spfi().using(SPFx(props.context));
           debugger
-          const newValues = {
-            "CommandUIExtension": selectedUserCustomAction.CommandUIExtension,
-            "Description": selectedUserCustomAction.Description,
-            "Group": selectedUserCustomAction.Group,
-            "ImageUrl": selectedUserCustomAction.ImageUrl,
-            "Location": selectedUserCustomAction.Location,
-            "Name": selectedUserCustomAction.Name,
-            "RegistrationId": selectedUserCustomAction.RegistrationId,
-            "RegistrationType": selectedUserCustomAction.RegistrationType,
-            "Rights": selectedUserCustomAction.Rights,
-            "Scope": selectedUserCustomAction.Scope,
-            "ScriptBlock": selectedUserCustomAction.ScriptBlock,
-            "ScriptSrc": selectedUserCustomAction.ScriptSrc,
-            "Sequence": selectedUserCustomAction.Sequence,
-            "Title": selectedUserCustomAction.Title,
-            "Url": selectedUserCustomAction.Url,
-            "VersionOfUserCustomAction": selectedUserCustomAction.VersionOfUserCustomAction
+          const newValues = {};
+          if (selectedUserCustomAction.CommandUIExtension) newValues["CommandUIExtension"] = selectedUserCustomAction.CommandUIExtension;
+          if (selectedUserCustomAction.Description) newValues["Description"] = selectedUserCustomAction.Description;
+          if (selectedUserCustomAction.Group) newValues["Group"] = selectedUserCustomAction.Group;
+          if (selectedUserCustomAction.ImageUrl) newValues["ImageUrl"] = selectedUserCustomAction.ImageUrl;
+          if (selectedUserCustomAction.Location) newValues["Location"] = selectedUserCustomAction.Location;
+          if (selectedUserCustomAction.Name) newValues["Name"] = selectedUserCustomAction.Name;
+          if (selectedUserCustomAction.RegistrationId) newValues["RegistrationId"] = selectedUserCustomAction.RegistrationId;
+          if (selectedUserCustomAction.RegistrationType) newValues["RegistrationType"] = selectedUserCustomAction.RegistrationType;
+          if (selectedUserCustomAction.Rights) newValues["Rights"] = selectedUserCustomAction.Rights;
+          if (selectedUserCustomAction.Scope) newValues["Scope"] = selectedUserCustomAction.Scope;
+          if (selectedUserCustomAction.ScriptBlock) newValues["ScriptBlock"] = selectedUserCustomAction.ScriptBlock;
+          if (selectedUserCustomAction.ScriptSrc) newValues["ScriptSrc"] = selectedUserCustomAction.ScriptSrc;
+          if (selectedUserCustomAction.Sequence) newValues["Sequence"] = selectedUserCustomAction.Sequence;
+          if (selectedUserCustomAction.Title) newValues["Title"] = selectedUserCustomAction.Title;
+          if (selectedUserCustomAction.Url) newValues["Url"] = selectedUserCustomAction.Url;
+          if (selectedUserCustomAction.VersionOfUserCustomAction) newValues["VersionOfUserCustomAction"] = selectedUserCustomAction.VersionOfUserCustomAction
 
-          };
-          if (command === 'edit') {
-            newValues["Id"]= selectedUserCustomAction.Id;
-          
-            await spWeb.web.userCustomActions.getById(selectedUserCustomAction.Id).update(newValues)
-              .then((x) => { debugger; })
-              .catch((x) => { debugger; })
-          } else  if (command === 'add') {
-           await spWeb.web.userCustomActions.add(newValues)
-              .then((x) => { debugger; })
-              .catch((x) => { debugger; })
+
+          switch (command) {
+            case 'edit': {
+              newValues["Id"] = selectedUserCustomAction.Id;
+              await spWeb.web.userCustomActions.getById(selectedUserCustomAction.Id).update(newValues)
+                .catch((x) => { debugger; });
+              break;
+            }
+            case 'add': {
+              await spWeb.web.userCustomActions.add(newValues)
+                .catch((x) => { debugger; });
+              break;
+            }
+            case 'delete': {
+              newValues["Id"] = selectedUserCustomAction.Id;
+              await spWeb.web.userCustomActions.getById(selectedUserCustomAction.Id).delete()
+                .catch((x) => { debugger; });
+              break;
+            }
           }
-          setRefresh(!refresh);
+          setRefresh(!refresh); setCommand(null);
         }
-        } >Save</PrimaryButton>
+        } >{getButtonText(command)}</PrimaryButton>
+
       </Panel>
-    </div>
+
+    </div >
+
   );
 }
 
