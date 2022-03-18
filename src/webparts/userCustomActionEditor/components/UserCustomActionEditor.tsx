@@ -3,10 +3,10 @@ import styles from './UserCustomActionEditor.module.scss';
 import { IUserCustomActionEditorProps } from './IUserCustomActionEditorProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 import { forEach, map, forIn } from 'lodash';
-import { spfi, SPFx } from "@pnp/sp";
+import { SPFI, spfi, SPFx } from "@pnp/sp";
 import { SPPermission } from "@microsoft/sp-page-context";
 import { PermissionKind, IBasePermissions } from "@pnp/sp/security";
-import { Web } from "@pnp/sp/webs";
+import { IWebInfo, Web } from "@pnp/sp/webs";
 import { UrlQueryParameterCollection } from '@microsoft/sp-core-library';
 import "@pnp/sp/webs";
 import "@pnp/sp/user-custom-actions";
@@ -27,8 +27,14 @@ import { Panel, PanelType } from "office-ui-fabric-react/lib/Panel";
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { ComboBox, Dropdown, IComboBoxOption } from 'office-ui-fabric-react';
+import "@pnp/sp/webs";
+import "@pnp/sp/lists";
+import "@pnp/sp/batching";
+import "@pnp/sp/sites";
+import { IContextInfo } from "@pnp/sp/sites";
 export default function UserCustomActionEditor(props: IUserCustomActionEditorProps) {
 
+  const [webInfo, setWebInfo] = React.useState<IWebInfo>(null);
   const [command, setCommand] = React.useState<string>(null);
   const [sortBy, setSortBy] = React.useState<string>("Title");
   const [actions, setActions] = React.useState<Array<IActionRef>>([]);
@@ -187,7 +193,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
   useEffect(
     () => {
       debugger;
-      var spWeb;
+      var spWeb:SPFI;
       const searchParams = new URLSearchParams(window.location.search);
       if (searchParams.get('site')) {
         spWeb = spfi(searchParams.get('site')).using(SPFx(props.context));
@@ -195,17 +201,22 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
       } else {
         spWeb = spfi().using(SPFx(props.context));
       }
+      const [batchedSP, execute] = spWeb.batched();
 
 
-      spWeb.web.userCustomActions().then((ucas) => {
+      batchedSP.web().then(r =>setWebInfo(r));
+      batchedSP.web.userCustomActions().then((ucas) => {
         setActions(ucas.map(uca => { return { Source: 'web', ActionInfo: uca, SourcId: '' } }));
-      })
+      });
+      execute();
 
     }, [refresh]);
 
 
   return (
     <div className={styles.userCustomActionEditor}>
+      <h1>{webInfo?webInfo.Title:"Loading..."}</h1>
+      <h3>{webInfo?webInfo.Url:"Loading..."}</h3>
       <CommandBar
         // isSearchBoxVisible={false}
         items={itemsNonFocusable}
