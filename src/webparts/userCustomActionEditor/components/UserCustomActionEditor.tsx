@@ -29,7 +29,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
 
   const [command, setCommand] = React.useState<string>(null);
   const [sortBy, setSortBy] = React.useState<string>("Title");
-
+  const [actions, setActions] = React.useState<Array<IUserCustomActionInfo>>([]);
   const [sortDescending, setSortDescending] = React.useState<boolean>(false);
   const [refresh, setRefresh] = React.useState<boolean>(false);
   const [selectedUserCustomAction, setSelectedUserCustomAction] = React.useState<IUserCustomActionInfo>(null);
@@ -62,13 +62,6 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
       },
 
     }];
-  /**
-* Taken from sp.js, checks the supplied permissions against the mask
-*
-* @param value The security principal's permissions on the given object
-* @param perm The permission checked against the value
-*/
- 
 
   function isSelectedPermission(ucaPermission: IBasePermissions, cbxPermission: SPPermission): boolean {
     // not checking if we have permission, just WHAT THE PERMISSION IS!!
@@ -181,7 +174,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
   ];
 
 
-  const [actions, setActions] = React.useState<Array<IUserCustomActionInfo>>([]);
+ 
   useEffect(
     () => {
       const spWeb = spfi().using(SPFx(props.context));
