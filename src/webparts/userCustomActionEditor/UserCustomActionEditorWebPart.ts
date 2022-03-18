@@ -19,7 +19,7 @@ export default class UserCustomActionEditorWebPart extends BaseClientSideWebPart
   protected async onInit(): Promise<void> {
 
     await super.onInit();
-    const sp = spfi().using(SPFx(this.context));
+    //const sp = spfi().using(SPFx(this.context));
 
 }
   public render(): void {

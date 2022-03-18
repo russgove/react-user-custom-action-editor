@@ -7,6 +7,7 @@ import { spfi, SPFx } from "@pnp/sp";
 import { SPPermission } from "@microsoft/sp-page-context";
 import { PermissionKind, IBasePermissions } from "@pnp/sp/security";
 import { Web } from "@pnp/sp/webs";
+import { UrlQueryParameterCollection } from '@microsoft/sp-core-library';
 import "@pnp/sp/webs";
 import "@pnp/sp/user-custom-actions";
 import { IUserCustomAction, IUserCustomActionInfo, UserCustomActionRegistrationType, UserCustomActionScope } from '@pnp/sp/user-custom-actions';
@@ -160,7 +161,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
       sortAscendingAriaLabel: 'Sorted A to Z',
       sortDescendingAriaLabel: 'Sorted Z to A',
       isSorted: sortBy === "Id", onColumnClick: columnHeaderClicked,
-      onRender: (item?: IActionRef, index?: number, column?: IColumn)=> {return item.ActionInfo.Id}
+      onRender: (item?: IActionRef, index?: number, column?: IColumn) => { return item.ActionInfo.Id }
     },
     {
       key: "Title", name: "Title", fieldName: "CustomActuion.Title", minWidth: 200,
@@ -168,16 +169,16 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
       sortAscendingAriaLabel: 'Sorted A to Z',
       sortDescendingAriaLabel: 'Sorted Z to A',
       isSorted: sortBy === "Title", onColumnClick: columnHeaderClicked,
-      onRender: (item?: IActionRef, index?: number, column?: IColumn)=> {return item.ActionInfo.Title}
- 
+      onRender: (item?: IActionRef, index?: number, column?: IColumn) => { return item.ActionInfo.Title }
+
     },
     {
       key: "Location", name: "Location", fieldName: "CustomActuion.Location", minWidth: 200, isSortedDescending: sortDescending,
       sortAscendingAriaLabel: 'Sorted A to Z',
       sortDescendingAriaLabel: 'Sorted Z to A',
       isSorted: sortBy === "Location", onColumnClick: columnHeaderClicked,
-      onRender: (item?: IActionRef, index?: number, column?: IColumn)=> {return item.ActionInfo.Location}
- 
+      onRender: (item?: IActionRef, index?: number, column?: IColumn) => { return item.ActionInfo.Location }
+
     }
   ];
 
@@ -185,7 +186,17 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
 
   useEffect(
     () => {
-      const spWeb = spfi().using(SPFx(props.context));
+      debugger;
+      var spWeb;
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get('site')) {
+        spWeb = spfi(searchParams.get('site')).using(SPFx(props.context));
+
+      } else {
+        spWeb = spfi().using(SPFx(props.context));
+      }
+
+
       spWeb.web.userCustomActions().then((ucas) => {
         setActions(ucas.map(uca => { return { Source: 'web', ActionInfo: uca, SourcId: '' } }));
       })
@@ -251,12 +262,12 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
           <TextField label='Description'
             value={selectedUserCustomAction ? selectedUserCustomAction.ActionInfo["Description"] : ""}
             onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-              
+
               setSelectedUserCustomAction({
                 ...selectedUserCustomAction,
                 ActionInfo: {
                   ...selectedUserCustomAction.ActionInfo,
-                  Description:newValue
+                  Description: newValue
                 }
               });
             }}
@@ -268,43 +279,43 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
                 ...selectedUserCustomAction,
                 ActionInfo: {
                   ...selectedUserCustomAction.ActionInfo,
-                  Group:newValue
+                  Group: newValue
                 }
               });
             }} />
           <TextField label='HostProperties' value={selectedUserCustomAction ? selectedUserCustomAction.ActionInfo["HostProperties"] : ""} />
           <TextField label='ImageUrl' value={selectedUserCustomAction ? selectedUserCustomAction.ActionInfo["ImageUrl"] : ""}
             onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-             
+
               setSelectedUserCustomAction({
                 ...selectedUserCustomAction,
                 ActionInfo: {
                   ...selectedUserCustomAction.ActionInfo,
-                  ImageUrl:newValue
+                  ImageUrl: newValue
                 }
               });
             }}
           />
           <TextField label='Location' value={selectedUserCustomAction ? selectedUserCustomAction.ActionInfo["Location"] : ""}
             onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-          
+
               setSelectedUserCustomAction({
                 ...selectedUserCustomAction,
                 ActionInfo: {
                   ...selectedUserCustomAction.ActionInfo,
-                  Location:newValue
+                  Location: newValue
                 }
               });
             }}
           />
           <TextField label='Name' value={selectedUserCustomAction ? selectedUserCustomAction.ActionInfo["Name"] : ""}
             onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-        
+
               setSelectedUserCustomAction({
                 ...selectedUserCustomAction,
                 ActionInfo: {
                   ...selectedUserCustomAction.ActionInfo,
-                  Name:newValue
+                  Name: newValue
                 }
               });
             }}
@@ -320,18 +331,18 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
           <TextField label='ScriptBlock' value={selectedUserCustomAction ? selectedUserCustomAction.ActionInfo["ScriptBlock"] : ""} />
           <TextField label='ScriptSrc' value={selectedUserCustomAction ? selectedUserCustomAction.ActionInfo["ScriptSrc"] : ""}
             onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-            
+
               setSelectedUserCustomAction({
                 ...selectedUserCustomAction,
                 ActionInfo: {
                   ...selectedUserCustomAction.ActionInfo,
-                  ScriptSrc:newValue
+                  ScriptSrc: newValue
                 }
               });
             }} />
           <TextField label='Sequence' type='number' value={selectedUserCustomAction ? selectedUserCustomAction.ActionInfo["Sequence"].toString() : ""}
             onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-              
+
               setSelectedUserCustomAction({
                 ...selectedUserCustomAction,
                 ActionInfo: {
@@ -347,7 +358,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
                 ...selectedUserCustomAction,
                 ActionInfo: {
                   ...selectedUserCustomAction.ActionInfo,
-                  Title:newValue
+                  Title: newValue
                 }
               });
             }}
@@ -358,7 +369,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
                 ...selectedUserCustomAction,
                 ActionInfo: {
                   ...selectedUserCustomAction.ActionInfo,
-                  Url:newValue
+                  Url: newValue
                 }
               });
             }} />
