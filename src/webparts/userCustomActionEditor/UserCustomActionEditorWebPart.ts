@@ -23,7 +23,7 @@ export default class UserCustomActionEditorWebPart extends BaseClientSideWebPart
 
 }
   public render(): void {
-    debugger;
+ 
     const element: React.ReactElement<IUserCustomActionEditorProps> = React.createElement(
       UserCustomActionEditor,
       {
