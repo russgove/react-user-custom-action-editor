@@ -34,6 +34,21 @@ import "@pnp/sp/sites";
 import { IContextInfo } from "@pnp/sp/sites";
 export default function UserCustomActionEditor(props: IUserCustomActionEditorProps) {
 
+  // Helper https://stackoverflow.com/questions/43100718/typescript-enum-to-object-array
+  const StringIsNumber = value => isNaN(Number(value)) === false;
+
+  // Turn enum into array
+  function ToArray(enumme) {
+    return Object.keys(enumme)
+      .filter(StringIsNumber)
+      .map(key => {
+        return { key: key, value: enumme[key] }
+      });
+  }
+  const userCustomActionScopes = ToArray(UserCustomActionScope);
+  const userCustomActionRegistrationTypes = ToArray(UserCustomActionRegistrationType);
+  debugger;
+
   const [webInfo, setWebInfo] = React.useState<IWebInfo>(null);
   const [command, setCommand] = React.useState<string>(null);
   const [sortBy, setSortBy] = React.useState<string>("Title");
@@ -179,7 +194,30 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
 
     },
     {
-      key: "Location", name: "Location", fieldName: "CustomActuion.Location", minWidth: 200, isSortedDescending: sortDescending,
+      key: "Scope", name: "Scope", fieldName: "Scope", minWidth: 200, isSortedDescending: sortDescending,
+      sortAscendingAriaLabel: 'Sorted A to Z',
+      sortDescendingAriaLabel: 'Sorted Z to A',
+      isSorted: sortBy === "Location", onColumnClick: columnHeaderClicked,
+      onRender: (item?: IActionRef, index?: number, column?: IColumn) => { return UserCustomActionScope[item.ActionInfo.Scope] }
+
+    },
+    {
+      key: "Scope", name: "Scope", fieldName: "Scope", minWidth: 200, isSortedDescending: sortDescending,
+      sortAscendingAriaLabel: 'Sorted A to Z',
+      sortDescendingAriaLabel: 'Sorted Z to A',
+      isSorted: sortBy === "Location", onColumnClick: columnHeaderClicked,
+      onRender: (item?: IActionRef, index?: number, column?: IColumn) => { return UserCustomActionRegistrationType[item.ActionInfo.RegistrationType] }
+    },
+    {
+      key: "Source", name: "Source", fieldName: "Source", minWidth: 200, isSortedDescending: sortDescending,
+      sortAscendingAriaLabel: 'Sorted A to Z',
+      sortDescendingAriaLabel: 'Sorted Z to A',
+      isSorted: sortBy === "Location", onColumnClick: columnHeaderClicked,
+      onRender: (item?: IActionRef, index?: number, column?: IColumn) => { return item.Source }
+
+    },
+    {
+      key: "Location", name: "Location", fieldName: "CustomAction.Location", minWidth: 200, isSortedDescending: sortDescending,
       sortAscendingAriaLabel: 'Sorted A to Z',
       sortDescendingAriaLabel: 'Sorted Z to A',
       isSorted: sortBy === "Location", onColumnClick: columnHeaderClicked,
@@ -190,10 +228,10 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
 
 
 
-  useEffect(
-    () => {
-      debugger;
-      var spWeb:SPFI;
+  useEffect(() => {
+    debugger;
+    const fetchData = async () => {
+      var spWeb: SPFI;
       const searchParams = new URLSearchParams(window.location.search);
       if (searchParams.get('site')) {
         spWeb = spfi(searchParams.get('site')).using(SPFx(props.context));
@@ -204,19 +242,34 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
       const [batchedSP, execute] = spWeb.batched();
 
 
-      batchedSP.web().then(r =>setWebInfo(r));
+      await spWeb.web().then(r => {
+        setWebInfo(r);
+      })
+        .catch((e) => {
+          debugger;
+        });
       batchedSP.web.userCustomActions().then((ucas) => {
         setActions(ucas.map(uca => { return { Source: 'web', ActionInfo: uca, SourcId: '' } }));
       });
+      batchedSP.web.lists.expand("UserCustomActions")().then((listswithactions) => {
+        debugger;
+        //useeconst listActions:IActionRef=listswithactions.map((lwa=>{return{}}))
+        console.log(listswithactions)
+        listswithactions.map(uca => { return { Source: 'web', ActionInfo: uca, SourcId: webInfo.Id } });
+      });
       execute();
 
-    }, [refresh]);
+    };
+
+    fetchData();
+
+  }, [refresh]);
 
 
   return (
     <div className={styles.userCustomActionEditor}>
-      <h1>{webInfo?webInfo.Title:"Loading..."}</h1>
-      <h3>{webInfo?webInfo.Url:"Loading..."}</h3>
+      <h1>{webInfo ? webInfo.Title : "Loading..."}</h1>
+      <h3>{webInfo ? webInfo.Url : "Loading..."}</h3>
       <CommandBar
         // isSearchBoxVisible={false}
         items={itemsNonFocusable}

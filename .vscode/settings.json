@@ -9,5 +9,8 @@
     "**/lib-amd": true,
     "src/**/*.scss.ts": true
   },
-  "typescript.tsdk": ".\\node_modules\\typescript\\lib"
+  "typescript.tsdk": ".\\node_modules\\typescript\\lib",
+  "terminal.integrated.env.windows": {
+    "node_options": "--max_old_space_size=8192"
+  }
 }
