@@ -1,12 +1,12 @@
 {
-  "@microsoft/generator-sharepoint": {
-    "isCreatingSolution": true,
-    "environment": "spo",
-    "version": "1.12.1",
-    "libraryName": "react-user-custom-action-editor",
-    "libraryId": "675f63a1-88da-4f80-b603-600000689399",
-    "packageManager": "npm",
-    "isDomainIsolated": false,
-    "componentType": "webpart"
-  }
+    "@microsoft/generator-sharepoint": {
+        "isCreatingSolution": true,
+        "environment": "spo",
+        "version": "1.14.0",
+        "libraryName": "react-user-custom-action-editor",
+        "libraryId": "675f63a1-88da-4f80-b603-600000689399",
+        "packageManager": "npm",
+        "isDomainIsolated": false,
+        "componentType": "webpart"
+    }
 }

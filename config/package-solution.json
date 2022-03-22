@@ -1,21 +1,38 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
-  "solution": {
-    "name": "react-user-custom-action-editor-client-side-solution",
-    "id": "675f63a1-88da-4f80-b603-600000689399",
-    "version": "1.0.0.0",
-    "includeClientSideAssets": true,
-    "skipFeatureDeployment": true,
-    "isDomainIsolated": false,
-    "developer": {
-      "name": "",
-      "websiteUrl": "",
-      "privacyUrl": "",
-      "termsOfUseUrl": "",
-      "mpnId": ""
+    "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+    "solution": {
+        "metadata": {
+            "shortDescription": {
+                "default": "react-user-custom-action-editor description"
+            },
+            "longDescription": {
+                "default": "react-user-custom-action-editor description"
+            },
+            "screenshotPaths": [],
+            "videoUrl": "",
+            "categories": []
+        },
+        "features": [{
+            "title": "react-user-custom-action-editor Feature",
+            "description": "The feature that activates elements of the react-user-custom-action-editor solution.",
+            "id": "467c6ba8-05b2-4793-b961-8a42908b44ff",
+            "version": "1.0.0.0"
+        }],
+        "name": "react-user-custom-action-editor-client-side-solution",
+        "id": "675f63a1-88da-4f80-b603-600000689399",
+        "version": "1.0.0.0",
+        "includeClientSideAssets": true,
+        "skipFeatureDeployment": true,
+        "isDomainIsolated": false,
+        "developer": {
+            "name": "",
+            "websiteUrl": "",
+            "privacyUrl": "",
+            "termsOfUseUrl": "",
+            "mpnId": ""
+        }
+    },
+    "paths": {
+        "zippedPackage": "solution/react-user-custom-action-editor.sppkg"
     }
-  },
-  "paths": {
-    "zippedPackage": "solution/react-user-custom-action-editor.sppkg"
-  }
 }

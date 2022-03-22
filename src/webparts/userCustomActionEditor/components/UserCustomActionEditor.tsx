@@ -47,7 +47,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
   }
   const userCustomActionScopes = ToArray(UserCustomActionScope);
   const userCustomActionRegistrationTypes = ToArray(UserCustomActionRegistrationType);
-  debugger;
+
 
   const [webInfo, setWebInfo] = React.useState<IWebInfo>(null);
   const [command, setCommand] = React.useState<string>(null);
@@ -202,7 +202,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
 
     },
     {
-      key: "Scope", name: "Scope", fieldName: "Scope", minWidth: 200, isSortedDescending: sortDescending,
+      key: "RegistrationType", name: "RegistrationType", fieldName: "RegistrationType", minWidth: 200, isSortedDescending: sortDescending,
       sortAscendingAriaLabel: 'Sorted A to Z',
       sortDescendingAriaLabel: 'Sorted Z to A',
       isSorted: sortBy === "Location", onColumnClick: columnHeaderClicked,
@@ -239,25 +239,45 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
       } else {
         spWeb = spfi().using(SPFx(props.context));
       }
-      const [batchedSP, execute] = spWeb.batched();
 
+      await spWeb.web().then(wi => {
+        debugger;
+        setWebInfo(wi);
 
-      await spWeb.web().then(r => {
-        setWebInfo(r);
+        const [batchedSP, execute] = spWeb.batched();
+var webActions,listactions: Array<IActionRef> = [];
+        batchedSP.web.userCustomActions()
+          .then((ucas) => {
+            debugger;
+            webActions=ucas.map(uca => { return { Source: 'web', ActionInfo: uca, SourcId: wi.Id } });
+          }).catch((e) => {
+            debugger;
+          });
+
+        batchedSP.web.lists.expand("UserCustomActions")()
+          .then((lists) => {
+            debugger;
+            const listwithactions = lists
+              .filter(lwa => {
+                debugger; return lwa.UserCustomActions.length > 0;
+              });
+            for (var lwa2 of listwithactions) {
+              for (var action of lwa2.UserCustomActions) {
+                listactions.push({ Source: 'list', ActionInfo: action, SourcId: wi.Id });
+              }
+            }
+            setActions(webActions.concat(listactions));
+            debugger;
+          })
+          .catch((e) => {
+            debugger;
+          });
+        execute();
       })
         .catch((e) => {
           debugger;
         });
-      batchedSP.web.userCustomActions().then((ucas) => {
-        setActions(ucas.map(uca => { return { Source: 'web', ActionInfo: uca, SourcId: '' } }));
-      });
-      batchedSP.web.lists.expand("UserCustomActions")().then((listswithactions) => {
-        debugger;
-        //useeconst listActions:IActionRef=listswithactions.map((lwa=>{return{}}))
-        console.log(listswithactions)
-        listswithactions.map(uca => { return { Source: 'web', ActionInfo: uca, SourcId: webInfo.Id } });
-      });
-      execute();
+
 
     };
 
