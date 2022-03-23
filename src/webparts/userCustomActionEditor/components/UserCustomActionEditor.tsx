@@ -9,6 +9,7 @@ import { PermissionKind, IBasePermissions } from "@pnp/sp/security";
 import { IWebInfo, Web } from "@pnp/sp/webs";
 import { UrlQueryParameterCollection } from '@microsoft/sp-core-library';
 import "@pnp/sp/webs";
+import "@pnp/sp/sites";
 import "@pnp/sp/user-custom-actions";
 import { IUserCustomAction, IUserCustomActionInfo, UserCustomActionRegistrationType, UserCustomActionScope } from '@pnp/sp/user-custom-actions';
 import { useState, useEffect } from "react";
@@ -231,7 +232,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
   useEffect(() => {
     debugger;
     const fetchData = async () => {
-      var spWeb: SPFI;
+      let spWeb: SPFI;
       const searchParams = new URLSearchParams(window.location.search);
       if (searchParams.get('site')) {
         spWeb = spfi(searchParams.get('site')).using(SPFx(props.context));
@@ -245,7 +246,7 @@ export default function UserCustomActionEditor(props: IUserCustomActionEditorPro
         setWebInfo(wi);
 
         const [batchedSP, execute] = spWeb.batched();
-var webActions,listactions: Array<IActionRef> = [];
+let webActions,listactions: Array<IActionRef> = [];
         batchedSP.web.userCustomActions()
           .then((ucas) => {
             debugger;
@@ -261,8 +262,8 @@ var webActions,listactions: Array<IActionRef> = [];
               .filter(lwa => {
                 debugger; return lwa.UserCustomActions.length > 0;
               });
-            for (var lwa2 of listwithactions) {
-              for (var action of lwa2.UserCustomActions) {
+            for (let lwa2 of listwithactions) {
+              for (let action of lwa2.UserCustomActions) {
                 listactions.push({ Source: 'list', ActionInfo: action, SourcId: wi.Id });
               }
             }
@@ -320,7 +321,7 @@ var webActions,listactions: Array<IActionRef> = [];
             selectedKey={getPermissionKindsOfUCA(selectedUserCustomAction.ActionInfo)}
             onChange={(event, selection, xxx) => {
               debugger;
-              var rights: any = {};
+              let rights: any = {};
               if (selection.key === 'fullMask') {
                 rights.High = '32767';
                 rights.Low = '65535';
